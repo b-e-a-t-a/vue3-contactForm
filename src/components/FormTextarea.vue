@@ -1,14 +1,14 @@
 <template>
   <div>
     <label :for="name">{{ label }}</label>
-    <input
+    <textarea
       :value="modelValue"
       :name="name"
       :id="name"
       class="input"
       v-bind="$attrs"
       @input="$emit('update:modelValue', $event.target.value)"
-    >
+    />
   </div>
 </template>
 

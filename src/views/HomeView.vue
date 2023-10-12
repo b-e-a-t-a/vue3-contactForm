@@ -31,15 +31,18 @@
               label="Subject"
               placeholder="Subject"
               autocomplete="off"
+              minlength="2"
               maxlength="100"
             />
-            <FormInput
+            <FormTextarea
               v-model="data.message"
               name="message"
               label="Message"
               placeholder="Write your message here"
-              type="textarea"
+              minlength="2"
               maxlength="500"
+              autocomplete="off"
+              rows="5"
               required
             />
           </fieldset>
@@ -53,13 +56,14 @@
 
     <section>
       SUMMARY
-      <pre> data </pre>
+      <pre> {{ data }} </pre>
     </section>
   </main>
 </template>
 
 <script setup>
 import FormInput from "../components/FormInput.vue";
+import FormTextarea from "../components/FormTextarea.vue";
 import { ref } from "vue";
 
 const data = ref({
@@ -69,6 +73,13 @@ const data = ref({
   message: ""
 });
 
+const send = () => {
+  try {
+    console.log('data', data.value);
+  } catch (error) {
+    console.log("error", error);
+  }
+}
 </script>
 
 <style lang="sass">

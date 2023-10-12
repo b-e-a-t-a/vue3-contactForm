@@ -58,16 +58,22 @@ fieldset
 label
   display: block
   font-weight: 500
-input
-  padding: 8px
-  border: 1px solid $color-background
-  border-radius: 2px
+textarea
+  line-height: 1.5rem
+input, textarea
   outline: none
   width: 100%
+  border: 1px solid $color-background
+  border-radius: 2px
+  padding: 8px
   &:hover
     border-color: $color-winterling-light
   &:active, &:focus
     border-color: $color-winterling-dark
+  &::placeholder
+    color: $placeholder-color
+    font-family: inherit
+    letter-spacing: inherit
 
 @media (min-width: 600px)
   form
