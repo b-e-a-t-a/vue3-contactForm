@@ -14,7 +14,10 @@
               maxlength="50"
               pattern="^[a-zA-Z]+[a-zA-Z\s]*?[^0-9]"
               autocomplete="off"
+              errorMessage="Invalid name. Name cannot contain numbers and must have at least 5 characters."
+              :error="invalidName"
               required
+              @blur="nameBlured = true"
             />
             <FormInput
               v-model="data.email"
@@ -64,7 +67,8 @@
 <script setup>
 import FormInput from "../components/FormInput.vue";
 import FormTextarea from "../components/FormTextarea.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { validateName } from "../utils/validators.js";
 
 const data = ref({
   name: "",
@@ -73,7 +77,17 @@ const data = ref({
   message: ""
 });
 
+const nameBlured = ref(false);
+
+const invalidName = computed(() => {
+  return Boolean(!data.value.name && nameBlured.value)
+    || Boolean(nameBlured.value && !validateName(data.value.name))
+});
+
+
 const send = () => {
+  nameBlured.value = true;
+
   try {
     console.log('data', data.value);
   } catch (error) {
@@ -83,5 +97,10 @@ const send = () => {
 </script>
 
 <style lang="sass">
-
+@import "../assets/main.sass"
+.error
+  border: 1px solid $error-color
+.error-message
+  color: $error-color
+  font-size: 12px
 </style>
