@@ -56,7 +56,12 @@
             />
           </fieldset>
 
-          <button type="submit">Send</button>
+          <button type="submit" :disabled="isLoading">
+            <span v-if="isLoading" class="loader">
+              <Loader />
+            </span>
+            <span v-else>Send</span>
+          </button>
         </form>
       </transition>
     </section>
@@ -66,6 +71,7 @@
 <script setup>
 import FormInput from "../components/FormInput.vue";
 import FormTextarea from "../components/FormTextarea.vue";
+import Loader from "../components/Loader.vue";
 import { ref, computed } from "vue";
 import { validateName, validateEmail } from "../utils/validators.js";
 
@@ -79,6 +85,8 @@ const data = ref({
 const nameBlured = ref(false);
 const emailBlured = ref(false);
 const messageBlured = ref(false);
+
+const isLoading = ref(false);
 
 const invalidName = computed(() => {
   return Boolean(!data.value.name && nameBlured.value)  //no value but touched
@@ -106,16 +114,38 @@ const send = () => {
   emailBlured.value = true;
   messageBlured.value = true;
   if (isFormValid.value) {
-    // loader
-    // api
-    try {
-      console.log('data', data.value);
-      // clear fields
+    isLoading.value = true;
+
+    fetch(`https://5d9f7fe94d823c0014dd323d.mockapi.io/api`, {
+      method: 'POST',
+      body: JSON.stringify(data.value),
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+    .then( async (response) => {
+
+      if (response.ok) {
+        response = await response.json()
+        console.log('response json', response);
+        isLoading.value = false;
+        data.value = {};
+        nameBlured.value = false;
+        emailBlured.value = false;
+        messageBlured.value = false;
+        // notification
+      } else {
+        console.log('not success', response.status, response.statusText)
+        isLoading.value = false;
+        // notification
+        throw new Error('not success', response.statusText);
+      }
+    })
+    .catch( error => {
+      console.log('error', error);
       // notification
-    } catch (error) {
-      console.log("error", error);
-      // notification
-    }
+    });
   }
 }
 </script>
@@ -127,4 +157,7 @@ const send = () => {
 .error-message
   color: $error-color
   font-size: 12px
+.loader
+  display: flex
+  justify-content: center
 </style>

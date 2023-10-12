@@ -35,13 +35,20 @@ form
     border-radius: 2px
     cursor: pointer
     font-size: 16px
-    &:disabled
-      opacity: .5
-      transition: opacity .3s ease-in-out
+    > span
+      font-weight: 700
     &:hover
       border: 1px solid $color-winterling-superdark
       background-color: $color-white
       color: $color-winterling-superdark
+      &:disabled
+        background-color: $color-winterling-superdark
+        color: $color-white
+        border: 1px solid $color-winterling-superdark
+    &:disabled
+      opacity: .5
+      transition: opacity .3s ease-in-out
+      cursor: not-allowed
 
 fieldset
   border: 0
