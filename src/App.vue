@@ -12,10 +12,15 @@ import HomeView from "./views/HomeView.vue"
 @import './assets/main.sass'
 
 .container
-  background-color: $primary-light-color
-  width: 100%
-  padding: 10px 40px
-  max-width: 1024px
+  min-height: 100vh
   margin: 0 auto
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-wrap: wrap
+  background-color: $color-winterling
+  //width: 100%
+  //max-width: 1024px
+@media (min-width: 1024px)
 
 </style>

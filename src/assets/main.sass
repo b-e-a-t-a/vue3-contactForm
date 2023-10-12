@@ -1,8 +1,75 @@
-$action-color: #93C572
-$background-color: #A9BA9D// #8F9779
+// COLORS
+$color-white: #ffffff
+$color-background: #dbedef
+
+$color-winterling-light: #b7dbdf
+$color-winterling: #94cace
+$color-winterling-dark: #70b8be
+$color-winterling-superdark: #4ca6ae
+
 $error-color: #cc0000
 $placeholder-color: #949494
 
-$primary-dark-color: #355E3B
-$primary-light-color: #96C8A2// #A0D6B4
-$primary-middle-color: #50C878
+
+// MAIN STYLES
+h1
+  text-transform: uppercase
+  text-align: center
+  font-weight: 700
+
+// FORMS
+form
+  max-width: 100%
+  min-width: 90vw
+  background-color: $color-white
+  padding: 10px
+  border-radius: 4px
+  box-shadow: 0 20px 26px 15px $color-winterling-superdark
+  button
+    width: 100%
+    padding: 20px
+    background-color: $color-winterling-superdark
+    color: $color-white
+    outline: none
+    border: 1px solid $color-winterling-superdark
+    border-radius: 2px
+    cursor: pointer
+    > span
+      font-size: 16px
+      font-weight: 700
+    &:disabled
+      opacity: .5
+      transition: opacity .3s ease-in-out
+    &:hover
+      border: 1px solid $color-winterling-superdark
+      background-color: $color-white
+      color: $color-winterling-superdark
+
+
+fieldset
+  border: 0
+  margin: 40px auto
+  padding: 0
+  display: flex
+  flex-direction: column
+  gap: 20px
+  > div
+    width: 100%
+label
+  display: block
+  font-weight: 500
+input
+  padding: 8px
+  border: 1px solid $color-background
+  border-radius: 2px
+  outline: none
+  width: 100%
+  &:hover
+    border-color: $color-winterling-light
+  &:active, &:focus
+    border-color: $color-winterling-dark
+
+@media (min-width: 600px)
+  form
+    min-width: 600px
+    padding: 30px 50px

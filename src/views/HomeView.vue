@@ -1,49 +1,60 @@
 <template>
-  <header>
-    <h1>Contact Form App</h1>
-  </header>
   <main>
-    <div class="wrapper">
-      <section class="form">
-        FORM
-        <transition name="form">
-          <form prevent.default="submit">
+    <section>
+      <transition name="form">
+        <form @submit.prevent="send">
+          <h1>Contact Form</h1>
+          <fieldset>
             <FormInput
               v-model="data.name"
+              name="name"
               label="Name"
               placeholder="Your name"
+              minlength="5"
+              maxlength="50"
+              pattern="^[a-zA-Z]+[a-zA-Z\s]*?[^0-9]"
+              autocomplete="off"
+              required
             />
-
             <FormInput
               v-model="data.email"
+              name="email"
               label="Email"
               placeholder="Your email"
+              type="email"
+              autocomplete="off"
+              required
             />
-
             <FormInput
               v-model="data.subject"
+              name="subject"
               label="Subject"
               placeholder="Subject"
+              autocomplete="off"
+              maxlength="100"
             />
-
             <FormInput
               v-model="data.message"
+              name="message"
               label="Message"
               placeholder="Write your message here"
+              type="textarea"
+              maxlength="500"
+              required
             />
+          </fieldset>
 
-            <button type="submit">
-              <span>Submit</span>
-            </button>
-          </form>
-        </transition>
-      </section>
+          <button type="submit">
+            <span>Submit</span>
+          </button>
+        </form>
+      </transition>
+    </section>
 
-      <section>
-        SUMMARY
-        <pre> data </pre>
-      </section>
-    </div>
+    <section>
+      SUMMARY
+      <pre> data </pre>
+    </section>
   </main>
 </template>
 
@@ -61,22 +72,5 @@ const data = ref({
 </script>
 
 <style lang="sass">
-.wrapper
-  min-height: 100vh
-  padding: 0 20px
-  display: flex
-  flex-direction: column
-  flex: 1
-  position: relative
 
-h1
-  text-transform: uppercase
-  text-align: center
-
-@media (min-width: 1024px)
-  .wrapper
-    min-height: 100vh
-    display: flex
-    place-items: flex-start
-    flex-wrap: wrap
 </style>
