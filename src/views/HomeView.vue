@@ -26,7 +26,10 @@
               placeholder="Your email"
               type="email"
               autocomplete="off"
+              errorMessage="Invalid email address"
+              :error="invalidEmail"
               required
+              @blur="emailBlured = true"
             />
             <FormInput
               v-model="data.subject"
@@ -68,7 +71,7 @@
 import FormInput from "../components/FormInput.vue";
 import FormTextarea from "../components/FormTextarea.vue";
 import { ref, computed } from "vue";
-import { validateName } from "../utils/validators.js";
+import { validateName, validateEmail } from "../utils/validators.js";
 
 const data = ref({
   name: "",
@@ -78,15 +81,21 @@ const data = ref({
 });
 
 const nameBlured = ref(false);
+const emailBlured = ref(false);
 
 const invalidName = computed(() => {
-  return Boolean(!data.value.name && nameBlured.value)
-    || Boolean(nameBlured.value && !validateName(data.value.name))
+  return Boolean(!data.value.name && nameBlured.value)  //no value but touched
+    || Boolean(nameBlured.value && !validateName(data.value.name))  //value in incorrect format
 });
 
+const invalidEmail = computed(() => {
+  return Boolean(!data.value.email && emailBlured.value)
+    || Boolean(emailBlured.value && !validateEmail(data.value.email))
+});
 
 const send = () => {
   nameBlured.value = true;
+  emailBlured.value = true;
 
   try {
     console.log('data', data.value);
