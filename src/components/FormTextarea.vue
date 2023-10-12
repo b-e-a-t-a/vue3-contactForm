@@ -1,11 +1,12 @@
 <template>
-  <div :class="{'error': error}">
+  <div>
     <label :for="name">{{ label }}</label>
     <textarea
       :value="modelValue"
       :name="name"
       :id="name"
       class="input"
+      :class="{'error': error}"
       v-bind="$attrs"
       @input="$emit('update:modelValue', $event.target.value)"
     />

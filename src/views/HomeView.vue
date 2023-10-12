@@ -49,20 +49,16 @@
               maxlength="500"
               autocomplete="off"
               rows="5"
+              errorMessage="This field cannot be empty"
+              :error="invalidMessage"
               required
+              @blur="messageBlured = true"
             />
           </fieldset>
 
-          <button type="submit">
-            <span>Submit</span>
-          </button>
+          <button type="submit">Send</button>
         </form>
       </transition>
-    </section>
-
-    <section>
-      SUMMARY
-      <pre> {{ data }} </pre>
     </section>
   </main>
 </template>
@@ -82,6 +78,7 @@ const data = ref({
 
 const nameBlured = ref(false);
 const emailBlured = ref(false);
+const messageBlured = ref(false);
 
 const invalidName = computed(() => {
   return Boolean(!data.value.name && nameBlured.value)  //no value but touched
@@ -93,14 +90,32 @@ const invalidEmail = computed(() => {
     || Boolean(emailBlured.value && !validateEmail(data.value.email))
 });
 
+const invalidMessage = computed(() => {
+  return Boolean(!data.value.message && messageBlured.value)
+});
+
+const isFormValid = computed(() => {
+  const valid = data.value.name &&
+    data.value.message &&
+    !invalidEmail.value
+  return valid;
+});
+
 const send = () => {
   nameBlured.value = true;
   emailBlured.value = true;
-
-  try {
-    console.log('data', data.value);
-  } catch (error) {
-    console.log("error", error);
+  messageBlured.value = true;
+  if (isFormValid.value) {
+    // loader
+    // api
+    try {
+      console.log('data', data.value);
+      // clear fields
+      // notification
+    } catch (error) {
+      console.log("error", error);
+      // notification
+    }
   }
 }
 </script>
