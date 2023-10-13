@@ -66,13 +66,34 @@
       </transition>
     </section>
   </main>
+
+  <TransitionGroup name="transform-translate">
+    <Toast
+      v-if="success"
+      :title="'Your message has been sent successfully'"
+      @closeToast="success = false"
+    />
+    <Toast
+      v-if="errorThrow && errorThrow.state && !errorThrow.message"
+      error
+      title="Please try again"
+      @closeToast="errorThrow.state = false"
+    />
+    <Toast
+      v-if="errorThrow && errorThrow.state && errorThrow.message"
+      error
+      :title="`Error: ${errorThrow.message}`"
+      @closeToast="errorThrow.state = false"
+    />
+  </TransitionGroup>
 </template>
 
 <script setup>
 import FormInput from "../components/FormInput.vue";
 import FormTextarea from "../components/FormTextarea.vue";
 import Loader from "../components/Loader.vue";
-import { ref, computed } from "vue";
+import Toast from "../components/Toast.vue";
+import { ref, computed, reactive } from "vue";
 import { validateName, validateEmail } from "../utils/validators.js";
 
 const data = ref({
@@ -82,11 +103,16 @@ const data = ref({
   message: ""
 });
 
+let errorThrow = reactive({
+  state: false,
+  message: null
+});
+const success = ref(false);
+const isLoading = ref(false);
+
 const nameBlured = ref(false);
 const emailBlured = ref(false);
 const messageBlured = ref(false);
-
-const isLoading = ref(false);
 
 const invalidName = computed(() => {
   return Boolean(!data.value.name && nameBlured.value)  //no value but touched
@@ -109,16 +135,19 @@ const isFormValid = computed(() => {
   return valid;
 });
 
+const setBlurValues = (val) => {
+  nameBlured.value = val;
+  emailBlured.value = val;
+  messageBlured.value = val;
+}
 const send = () => {
-  nameBlured.value = true;
-  emailBlured.value = true;
-  messageBlured.value = true;
+  setBlurValues(true);
   if (isFormValid.value) {
     isLoading.value = true;
 
-    fetch(`https://5d9f7fe94d823c0014dd323d.mockapi.io/api`, {
+    fetch(`https://5d9f7fe94d823c0014dd323d.mockapi.io/api/message`, {
       method: 'POST',
-      body: JSON.stringify(data.value),
+      body: JSON.stringify(data),
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
         'Access-Control-Allow-Origin': '*'
@@ -131,20 +160,20 @@ const send = () => {
         console.log('response json', response);
         isLoading.value = false;
         data.value = {};
-        nameBlured.value = false;
-        emailBlured.value = false;
-        messageBlured.value = false;
-        // notification
+        setBlurValues(false);
+        success.value = true;
       } else {
-        console.log('not success', response.status, response.statusText)
+        console.log('not success', response)
         isLoading.value = false;
-        // notification
-        throw new Error('not success', response.statusText);
+        errorThrow.state = true;
+        errorThrow.message = response.statusText;
+        //"Max number of elements reached for this resource!"
       }
     })
-    .catch( error => {
-      console.log('error', error);
-      // notification
+    .catch( err => {
+      console.log('err', err);
+      errorThrow.state = true;
+      errorThrow.message = err;
     });
   }
 }
@@ -160,4 +189,9 @@ const send = () => {
 .loader
   display: flex
   justify-content: center
+.transform-translate
+  &-enter-active,
+  &-leave-to
+    opacity: 0
+    transform: translateY(100%)
 </style>
