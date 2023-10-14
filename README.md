@@ -1,6 +1,8 @@
 # vue3-contactForm
 
-This was created with Vue 3 & Vite & Vue Test Utils.
+This app was created with Vue 3 & Vite & Vue Test Utils.
+Project is published here:
+http://b-e-a-t-a.github.io/vue3-contactForm
 
 ## Recommended IDE Setup
 
@@ -22,6 +24,12 @@ npm run dev
 
 ```sh
 npm run build
+```
+
+### Locally Preview Production build
+
+```sh
+npm run preview
 ```
 
 ### Run Unit Tests

@@ -1,10 +1,13 @@
 {
+  "homepage": "http://b-e-a-t-a.github.io/vue3-contactForm",
   "name": "vue3-contactform",
   "version": "0.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "preview": "vite preview",
     "test:unit": "vitest"
   },
@@ -17,6 +20,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.3.4",
     "@vue/test-utils": "^2.4.1",
+    "gh-pages": "^6.0.0",
     "jsdom": "^22.1.0",
     "sass": "^1.69.3",
     "vite": "^4.4.9",

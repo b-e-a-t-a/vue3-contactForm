@@ -15,6 +15,7 @@ export default defineConfig({
   //     },
   //   },
   // },
+  base: `/vue3-contactForm/`,
   plugins: [
     vue(),
   ],
