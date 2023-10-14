@@ -2,24 +2,25 @@
   <main>
     <section>
       <transition name="form">
-        <form @submit.prevent="send">
-          <h1>Contact Form</h1>
+        <form data-test="form" @submit.prevent="send">
+          <h1 data-test="header">Contact Form</h1>
           <fieldset>
             <FormInput
+              data-test="new-name"
               v-model="data.name"
               name="name"
               label="Name"
               placeholder="Your name"
-              minlength="5"
-              maxlength="50"
+              :minlength="minLengthName"
+              :maxlength="maxLengthName"
               pattern="^[a-zA-Z]+[a-zA-Z\s]*?[^0-9]"
               autocomplete="off"
-              errorMessage="Invalid name. Name cannot contain numbers and must have at least 5 characters."
+              :errorMessage="data.name.length < minLengthName ? `Invalid name. Name must be at least ${minLengthName} characters.` : (data.name.length > maxLengthName ? `Invalid name. Name must be maximum ${maxLengthName} characters` : 'Invalid name. Name can contain letters and cannot contain numbers')"
               :error="invalidName"
-              required
               @blur="nameBlured = true"
             />
             <FormInput
+              data-test="new-email"
               v-model="data.email"
               name="email"
               label="Email"
@@ -28,10 +29,10 @@
               autocomplete="off"
               errorMessage="Invalid email address"
               :error="invalidEmail"
-              required
               @blur="emailBlured = true"
             />
             <FormInput
+              data-test="new-subject"
               v-model="data.subject"
               name="subject"
               label="Subject"
@@ -41,6 +42,7 @@
               maxlength="100"
             />
             <FormTextarea
+              data-test="new-message"
               v-model="data.message"
               name="message"
               label="Message"
@@ -51,7 +53,6 @@
               rows="5"
               errorMessage="This field cannot be empty"
               :error="invalidMessage"
-              required
               @blur="messageBlured = true"
             />
           </fieldset>
@@ -69,8 +70,9 @@
 
   <TransitionGroup name="transform-translate">
     <Toast
+      id="success"
       v-if="success"
-      :title="'Your message has been sent successfully'"
+      title="Your message has been sent successfully"
       @closeToast="success = false"
     />
     <Toast
@@ -95,6 +97,9 @@ import Loader from "../components/Loader.vue";
 import Toast from "../components/Toast.vue";
 import { ref, computed, reactive } from "vue";
 import { validateName, validateEmail } from "../utils/validators.js";
+
+const minLengthName = 5;
+const maxLengthName = 50;
 
 const data = ref({
   name: "",
@@ -130,8 +135,11 @@ const invalidMessage = computed(() => {
 
 const isFormValid = computed(() => {
   const valid = data.value.name &&
+    data.value.email &&
     data.value.message &&
-    !invalidEmail.value
+    !invalidEmail.value &&
+    !invalidName.value &&
+    !invalidMessage.value
   return valid;
 });
 
@@ -139,7 +147,8 @@ const setBlurValues = (val) => {
   nameBlured.value = val;
   emailBlured.value = val;
   messageBlured.value = val;
-}
+};
+
 const send = () => {
   setBlurValues(true);
   if (isFormValid.value) {
@@ -167,7 +176,6 @@ const send = () => {
         isLoading.value = false;
         errorThrow.state = true;
         errorThrow.message = response.statusText;
-        //"Max number of elements reached for this resource!"
       }
     })
     .catch( err => {
@@ -176,7 +184,7 @@ const send = () => {
       errorThrow.message = err;
     });
   }
-}
+};
 </script>
 
 <style lang="sass">

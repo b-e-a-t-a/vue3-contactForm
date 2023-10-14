@@ -21,6 +21,6 @@ import HomeView from "./views/HomeView.vue"
   background-color: $color-winterling
   //width: 100%
   //max-width: 1024px
-@media (min-width: 1024px)
+//@media (min-width: 1024px)
 
 </style>
