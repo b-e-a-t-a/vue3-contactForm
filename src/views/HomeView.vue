@@ -27,7 +27,7 @@
               placeholder="Your email"
               type="email"
               autocomplete="off"
-              errorMessage="Invalid email address"
+              :errorMessage="(data.email && data.email.length) ? 'Invalid email address' : 'Required field'"
               :error="invalidEmail"
               @blur="emailBlured = true"
             />
@@ -38,8 +38,8 @@
               label="Subject"
               placeholder="Subject"
               autocomplete="off"
-              minlength="2"
-              maxlength="100"
+              minlength="1"
+              :maxlength="maxLengthSubject"
             />
             <FormTextarea
               data-test="new-message"
@@ -47,11 +47,11 @@
               name="message"
               label="Message"
               placeholder="Write your message here"
-              minlength="2"
-              maxlength="500"
+              minlength="1"
+              :maxlength="maxLengthMessage"
               autocomplete="off"
               rows="5"
-              errorMessage="This field cannot be empty"
+              :errorMessage="(data.message && data.message.length > maxLengthMessage) ? `Message must be maximum ${maxLengthMessage} characters` : 'This field cannot be empty'"
               :error="invalidMessage"
               @blur="messageBlured = true"
             />
@@ -100,6 +100,8 @@ import { validateName, validateEmail } from "../utils/validators.js";
 
 const minLengthName = 5;
 const maxLengthName = 50;
+const maxLengthSubject = 100;
+const maxLengthMessage = 500;
 
 const data = ref({
   name: "",
@@ -133,6 +135,7 @@ const invalidEmail = computed(() => {
 
 const invalidMessage = computed(() => {
   return Boolean(!data.value.message && messageBlured.value)
+  || Boolean(messageBlured.value && data.value.message && data.value.message.length > maxLengthMessage)
 });
 
 const showErrorMessage = computed(() => {
