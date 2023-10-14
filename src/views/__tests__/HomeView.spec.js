@@ -6,6 +6,7 @@ describe('HomeView.vue', () => {
   let wrapper;
   let nameInput;
   let emailInput;
+  let subjectInput;
   let messageText;
   const minLengthName = 5;
   const maxLengthName = 50;
@@ -16,8 +17,10 @@ describe('HomeView.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(HomeView);
+
     nameInput = wrapper.find('[data-test="new-name"] input');
     emailInput = wrapper.find('[data-test="new-email"] input');
+    subjectInput = wrapper.find('[data-test="new-subject"] input');
     messageText = wrapper.find('[data-test="new-message"] textarea');
   });
 
@@ -35,12 +38,14 @@ describe('HomeView.vue', () => {
   test('gives empty name', async () => {
     const emptyName = '';
 
+    // input renders with an empty value
     expect(nameInput.text()).toContain('');
 
     await nameInput.setValue(emptyName);
+    // Check the input has correct value
     expect(nameInput.element.value).toBe('');
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-name"] .error-message'));
     expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain('Required field');
@@ -55,7 +60,7 @@ describe('HomeView.vue', () => {
     await nameInput.setValue(shortName);
     expect(nameInput.element.value).toBe(shortName);
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-name"] .error-message'));
     expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain(`Name must be at least ${minLengthName}`);
@@ -70,7 +75,7 @@ describe('HomeView.vue', () => {
     await nameInput.setValue(longName);
     expect(nameInput.element.value).toBe(longName);
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-name"] .error-message'));
     expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain(`Name must be maximum ${maxLengthName}`);
@@ -85,7 +90,7 @@ describe('HomeView.vue', () => {
     await wrapper.findComponent('[data-test="new-name"]').setValue(wrongName);
     expect(wrapper.find('[data-test="new-name"] input').element.value).toBe(wrongName);
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
     expect(nameInput.get('[data-test="new-name"] div').classes()).toContain('error-message');
     expect(nameInput.get('[data-test="new-name"] div').text()).toEqual('Invalid name. Name can contain letters and cannot contain numbers');
 
@@ -99,7 +104,7 @@ describe('HomeView.vue', () => {
     await emailInput.setValue(emptyEmail);
     expect(emailInput.element.value).toBe('');
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-email"] .error-message'));
     expect(wrapper.get('[data-test="new-email"] .error-message').text()).toContain('Required field');
@@ -114,7 +119,7 @@ describe('HomeView.vue', () => {
     await emailInput.setValue(invalidEmail);
     expect(emailInput.element.value).toBe(invalidEmail);
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-email"] .error-message'));
     expect(wrapper.get('[data-test="new-email"] .error-message').text()).toContain('Invalid email address');
@@ -129,7 +134,7 @@ describe('HomeView.vue', () => {
     await messageText.setValue(emptyMessage);
     expect(messageText.element.value).toBe('');
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-message"] .error-message'));
     expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain('This field cannot be empty');
@@ -138,55 +143,73 @@ describe('HomeView.vue', () => {
   test('enters too long message', async () => {
     const longMessage = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-    console.log('longMessage', longMessage.length)
     expect(messageText.text()).toContain('');
 
     await messageText.setValue(longMessage);
     expect(messageText.element.value).toBe(longMessage);
 
-    await wrapper.get('[data-test="form"]').trigger('submit');
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
     expect(wrapper.get('[data-test="new-message"] .error-message'));
     expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain(`Message must be maximum ${maxLengthMessage}`);
   })
 
   // 9. no div.error-message when empty input subject & click w Submit
+  test('enters empty subject', async () => {
+    const emptySubject = '';
+
+    expect(subjectInput.text()).toContain('');
+
+    await subjectInput.setValue(emptySubject);
+    expect(subjectInput.element.value).toBe('');
+
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
+
+    expect(wrapper.find('[data-test="new-subject"] .error-message').exists()).toBe(false);
+  })
 
   // 10. div.error-message when input subject value > 100 & click w Submit
+  test('enters too long subject', async () => {
+    const longSubject = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
-  // 11. any of div.error-message when all required input values & click w Submit
+    expect(subjectInput.text()).toContain('');
 
-  // 12. any of div.error-message when (requied && subject) input values & click w Submit
-  it('should submit the form when the submit button is clicked', async () => {
+    await subjectInput.setValue(longSubject);
+    expect(subjectInput.element.value).toBe(longSubject);
+
+    await wrapper.get('[data-test="form"]').trigger('submit.prevent');
+
+    expect(wrapper.get('[data-test="new-subject"] .error-message'));
+    expect(wrapper.get('[data-test="new-subject"] .error-message').text()).toContain(`Subject must be maximum ${maxLengthSubject}`);
+  })
+
+  // 11. SUCCESS: any of div.error-message when all required (no subject) input values & click w Submit
+
+  // 12. SUCCESS: any of div.error-message when (requied && subject) input values & click w Submit
+  it('should submit the form when all fields valid and the submit button is clicked', async () => {
     const name = 'Testowy Anonim';
     const email = 'testowy.anonim@domain.com';
     const subject = 'Test';
     const message = 'This is a long text message to send by me. This is a long text message to send by me';
 
-    // input renders with an empty value
     expect(nameInput.text()).toContain('');
-
     await nameInput.setValue(name);
-    // Check the input has correct value
     expect(nameInput.element.value).toBe('Testowy Anonim');
 
-    const emailInput = wrapper.find('[data-test="new-email"] input');
     expect(emailInput.text()).toContain('');
     await emailInput.setValue(email);
     expect(emailInput.element.value).toBe('testowy.anonim@domain.com');
 
-    const subjectInput = wrapper.find('[data-test="new-subject"] input');
     expect(subjectInput.text()).toContain('');
     await subjectInput.setValue(subject);
     expect(subjectInput.element.value).toBe('Test');
 
-    const messageText = wrapper.find('[data-test="new-message"] textarea');
     expect(messageText.text()).toContain('');
     await messageText.setValue(message);
     expect(messageText.element.value).toBe(message);
 
     const submitForm = wrapper.find('form[data-test="form"]');
-    const spyOnForm = vi.spyOn(submitForm, 'trigger')
+    const spyOnForm = vi.spyOn(submitForm, 'trigger');
     await submitForm.trigger('submit.prevent');
     expect(spyOnForm).toHaveBeenCalledOnce();
 
@@ -201,15 +224,25 @@ describe('HomeView.vue', () => {
           success: true
         }
       }
-    })
+    });
 
-  expect(wrapper.find('#success').exists()).toBe(true);
-  expect(wrapper.get('#success h3').text()).toEqual('Your message has been sent successfully');
-  //console.log(wrapper.get('#success h3').html())
-})
+    expect(wrapper.find('#success').exists()).toBe(true);
+    expect(wrapper.get('#success h3').text()).toEqual('Your message has been sent successfully');
+  })
 
   // 14. the error notification when http mock & POST errorThrow.state is true
-
+  test('renders an error toast', () => {
+    const wrapper = mount(HomeView, {
+      global: {
+        mocks: {
+          errorThrow: {
+            state: true
+          }
+        }
+      }
+    });
+    expect(wrapper.find('.toast-error').exists()).toBe(true);
+  })
   // 15. loader when isLoading jest true
 
   // 16. remaining input values when errorThrow.state is true

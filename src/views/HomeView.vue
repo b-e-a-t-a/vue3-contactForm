@@ -38,8 +38,9 @@
               label="Subject"
               placeholder="Subject"
               autocomplete="off"
-              minlength="1"
               :maxlength="maxLengthSubject"
+              :errorMessage="data.subject && data.subject.length > maxLengthSubject && `Subject must be maximum ${maxLengthSubject} characters`"
+              :error="invalidSubject"
             />
             <FormTextarea
               data-test="new-message"
@@ -138,6 +139,10 @@ const invalidMessage = computed(() => {
   || Boolean(messageBlured.value && data.value.message && data.value.message.length > maxLengthMessage)
 });
 
+const invalidSubject = computed(() => {
+  return Boolean(data.value.subject && data.value.subject.length > maxLengthSubject)
+});
+
 const showErrorMessage = computed(() => {
   if (data.value.name) {
     switch (true) {
@@ -157,6 +162,7 @@ const isFormValid = computed(() => {
   const valid = data.value.name &&
     data.value.email &&
     data.value.message &&
+    !invalidSubject.value &&
     !invalidEmail.value &&
     !invalidName.value &&
     !invalidMessage.value
