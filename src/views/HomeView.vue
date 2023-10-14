@@ -15,7 +15,7 @@
               :maxlength="maxLengthName"
               pattern="^[a-zA-Z]+[a-zA-Z\s]*?[^0-9]"
               autocomplete="off"
-              :errorMessage="data.name.length < minLengthName ? `Invalid name. Name must be at least ${minLengthName} characters.` : (data.name.length > maxLengthName ? `Invalid name. Name must be maximum ${maxLengthName} characters` : 'Invalid name. Name can contain letters and cannot contain numbers')"
+              :errorMessage="showErrorMessage"
               :error="invalidName"
               @blur="nameBlured = true"
             />
@@ -122,6 +122,8 @@ const messageBlured = ref(false);
 const invalidName = computed(() => {
   return Boolean(!data.value.name && nameBlured.value)  //no value but touched
     || Boolean(nameBlured.value && !validateName(data.value.name))  //value in incorrect format
+    || Boolean(nameBlured.value && data.value.name && data.value.name.length < minLengthName)
+    || Boolean(nameBlured.value && data.value.name && data.value.name.length > maxLengthName)
 });
 
 const invalidEmail = computed(() => {
@@ -131,6 +133,21 @@ const invalidEmail = computed(() => {
 
 const invalidMessage = computed(() => {
   return Boolean(!data.value.message && messageBlured.value)
+});
+
+const showErrorMessage = computed(() => {
+  if (data.value.name) {
+    switch (true) {
+      case (data.value.name.length < minLengthName):
+        return `Invalid name. Name must be at least ${minLengthName} characters`;
+      case (data.value.name.length > maxLengthName):
+        return `Invalid name. Name must be maximum ${maxLengthName} characters`;
+      default:
+        return "Invalid name. Name can contain letters and cannot contain numbers";
+    }
+  } else {
+    return `Required field. Name must be at least ${minLengthName} characters`;
+  }
 });
 
 const isFormValid = computed(() => {

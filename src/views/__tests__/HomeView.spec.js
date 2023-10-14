@@ -4,6 +4,8 @@ import HomeView from '../HomeView.vue';
 
 describe('HomeView.vue', () => {
   let wrapper;
+  const minLengthName = 5;
+  const maxLengthName = 50;
 
   //console.log(wrapper.html())
 
@@ -33,14 +35,53 @@ describe('HomeView.vue', () => {
     await wrapper.get('[data-test="form"]').trigger('submit');
 
     expect(wrapper.get('[data-test="new-name"] .error-message'));
+    expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain('Required field');
   })
 
   // 2. div.error-message when input name value length < 5 & click Submit (validateName)
+  test('gives too short name', async () => {
+    const shortName = 'Evan';
+    const nameInput = wrapper.find('[data-test="new-name"] input');
+    expect(nameInput.text()).toContain('');
+
+    await nameInput.setValue(shortName);
+    expect(nameInput.element.value).toBe(shortName);
+
+    await wrapper.get('[data-test="form"]').trigger('submit');
+
+    expect(wrapper.get('[data-test="new-name"] .error-message'));
+    expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain(`Name must be at least ${minLengthName}`);
+  })
 
   // 3. div.error-message when input name value length > 50 & click Submit (validateName)
+  test('gives too long name', async () => {
+    const longName = 'EvanYou EvanYou EvanYou EvanYou EvanYou EvanYou EvanYour ';
+    const nameInput = wrapper.find('[data-test="new-name"] input');
+    expect(nameInput.text()).toContain('');
+
+    await nameInput.setValue(longName);
+    expect(nameInput.element.value).toBe(longName);
+
+    await wrapper.get('[data-test="form"]').trigger('submit');
+
+    expect(wrapper.get('[data-test="new-name"] .error-message'));
+    expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain(`Name must be maximum ${maxLengthName}`);
+  })
 
   // 4. div.error-message when input name value is number & click Submit (validateName)
+  test('gives wrong name', async () => {
+    const wrongName = '123Anonimowy';
+    const nameInput = wrapper.getComponent('[data-test="new-name"]');
+    expect(nameInput.get('[data-test="new-name"] input').text()).toEqual('');
 
+    await wrapper.findComponent('[data-test="new-name"]').setValue(wrongName);
+    expect(wrapper.find('[data-test="new-name"] input').element.value).toBe(wrongName);
+
+    await wrapper.get('[data-test="form"]').trigger('submit');
+    expect(nameInput.get('[data-test="new-name"] div').classes()).toContain('error-message');
+    expect(nameInput.get('[data-test="new-name"] div').text()).toEqual('Invalid name. Name can contain letters and cannot contain numbers');
+
+  })
   // 5. div.error-message when empty input email & click Submit
 
   // 6. div.error-message when wrong format of input email & click w Submit (validateEmail)
