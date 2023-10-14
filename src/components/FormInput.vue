@@ -29,7 +29,7 @@ defineProps({
     default: ""
   },
   errorMessage: {
-    type: String,
+    type: [String, Boolean],
     default: ""
   },
   error: {

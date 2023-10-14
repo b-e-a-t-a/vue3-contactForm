@@ -192,20 +192,17 @@ const send = () => {
 
       if (response.ok) {
         response = await response.json()
-        console.log('response json', response);
         isLoading.value = false;
         data.value = {};
         setBlurValues(false);
         success.value = true;
       } else {
-        console.log('not success', response)
         isLoading.value = false;
         errorThrow.state = true;
         errorThrow.message = response.statusText;
       }
     })
     .catch( err => {
-      console.log('err', err);
       errorThrow.state = true;
       errorThrow.message = err;
     });

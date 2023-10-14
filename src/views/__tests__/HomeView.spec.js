@@ -13,8 +13,6 @@ describe('HomeView.vue', () => {
   const maxLengthSubject = 100;
   const maxLengthMessage = 500;
 
-  //console.log(wrapper.html())
-
   beforeEach(() => {
     wrapper = mount(HomeView);
 
@@ -38,11 +36,9 @@ describe('HomeView.vue', () => {
   test('gives empty name', async () => {
     const emptyName = '';
 
-    // input renders with an empty value
     expect(nameInput.text()).toContain('');
 
     await nameInput.setValue(emptyName);
-    // Check the input has correct value
     expect(nameInput.element.value).toBe('');
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
@@ -93,8 +89,8 @@ describe('HomeView.vue', () => {
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
     expect(nameInput.get('[data-test="new-name"] div').classes()).toContain('error-message');
     expect(nameInput.get('[data-test="new-name"] div').text()).toEqual('Invalid name. Name can contain letters and cannot contain numbers');
-
   })
+
   // 5. div.error-message when empty input email & click Submit
   test('gives empty email', async () => {
     const emptyEmail = '';
@@ -110,7 +106,7 @@ describe('HomeView.vue', () => {
     expect(wrapper.get('[data-test="new-email"] .error-message').text()).toContain('Required field');
   })
 
-  // 6. div.error-message when wrong format of input email & click w Submit (validateEmail)
+  // 6. div.error-message when wrong format of input email & click Submit (validateEmail)
   test('enters invalid email', async () => {
     const invalidEmail = 'www.google.com';
 
@@ -139,7 +135,8 @@ describe('HomeView.vue', () => {
     expect(wrapper.get('[data-test="new-message"] .error-message'));
     expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain('This field cannot be empty');
   })
-  // 8. div.error-message when input message value length > 500 & click w Submit
+
+  // 8. div.error-message when input message value length > 500 & click Submit
   test('enters too long message', async () => {
     const longMessage = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
@@ -154,7 +151,7 @@ describe('HomeView.vue', () => {
     expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain(`Message must be maximum ${maxLengthMessage}`);
   })
 
-  // 9. no div.error-message when empty input subject & click w Submit
+  // 9. SUCCESS no div.error-message when empty input subject & click Submit
   test('enters empty subject', async () => {
     const emptySubject = '';
 
@@ -168,7 +165,7 @@ describe('HomeView.vue', () => {
     expect(wrapper.find('[data-test="new-subject"] .error-message').exists()).toBe(false);
   })
 
-  // 10. div.error-message when input subject value > 100 & click w Submit
+  // 10. div.error-message when input subject value > 100 & click Submit
   test('enters too long subject', async () => {
     const longSubject = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
 
@@ -183,9 +180,9 @@ describe('HomeView.vue', () => {
     expect(wrapper.get('[data-test="new-subject"] .error-message').text()).toContain(`Subject must be maximum ${maxLengthSubject}`);
   })
 
-  // 11. SUCCESS: any of div.error-message when all required (no subject) input values & click w Submit
+  // 11. SUCCESS: any of div.error-message when all required (no subject) input values & click Submit
 
-  // 12. SUCCESS: any of div.error-message when (requied && subject) input values & click w Submit
+  // 12. SUCCESS: any of div.error-message when (requied && subject) input values & click Submit
   it('should submit the form when all fields valid and the submit button is clicked', async () => {
     const name = 'Testowy Anonim';
     const email = 'testowy.anonim@domain.com';
@@ -216,7 +213,7 @@ describe('HomeView.vue', () => {
     expect(submitForm.find('.error-message').exists()).toBe(false);
   })
 
-  // 13. the success notification should be shown when http mock & POST success is true
+  // 13. the success notification should be shown when success is true
   test('renders a success toast', () => {
     const wrapper = mount(HomeView, {
       global: {
@@ -230,7 +227,7 @@ describe('HomeView.vue', () => {
     expect(wrapper.get('#success h3').text()).toEqual('Your message has been sent successfully');
   })
 
-  // 14. the error notification when http mock & POST errorThrow.state is true
+  // 14. the error notification when errorThrow.state is true
   test('renders an error toast', () => {
     const wrapper = mount(HomeView, {
       global: {
@@ -243,10 +240,17 @@ describe('HomeView.vue', () => {
     });
     expect(wrapper.find('.toast-error').exists()).toBe(true);
   })
+
   // 15. loader when isLoading jest true
+  test('renders a loader', () => {
+    const wrapper = mount(HomeView, {
+      global: {
+        mocks: {
+          isLoading: true
+        }
+      }
+    })
 
-  // 16. remaining input values when errorThrow.state is true
-
-  // 17. no input values when success is true
-
+    expect(wrapper.find('.loader').exists()).toBe(true);
+  })
 })
