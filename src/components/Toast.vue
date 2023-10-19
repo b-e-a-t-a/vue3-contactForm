@@ -42,14 +42,13 @@ function handleToastClosed() {
 </script>
 
 <style lang="sass" scoped>
-@import "../assets/main.sass"
 
 .toast
   position: fixed
   bottom: 0
   left: 0
   right: 0
-  background: $success-color
+  //background: $success-color
   padding: 2.5rem 0
   transition: all .3s
   z-index: 10

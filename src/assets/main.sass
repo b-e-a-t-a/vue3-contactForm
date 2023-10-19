@@ -1,3 +1,5 @@
+//@use 'vuetify/settings' with ($button-height: 100px)
+
 // COLORS
 $color-white: #ffffff
 $color-background: #dbedef
@@ -14,43 +16,29 @@ $placeholder-color: #949494
 
 
 // MAIN STYLES
-h1, button
-  text-transform: uppercase
-  text-align: center
-  font-weight: 700
 
 // FORMS
 form
   max-width: 100%
   width: 90vw
   background-color: $color-white
-  padding: 10px
-  border-radius: 4px
-  box-shadow: 0 20px 26px 15px $color-winterling-superdark
   button
-    width: 100%
-    padding: 20px
-    background-color: $color-winterling-superdark
-    color: $color-white
-    outline: none
-    border: 1px solid $color-winterling-superdark
-    border-radius: 2px
-    cursor: pointer
-    font-size: 16px
-    > span
-      font-weight: 700
-    &:hover
-      border: 1px solid $color-winterling-superdark
-      background-color: $color-white
-      color: $color-winterling-superdark
-      &:disabled
-        background-color: $color-winterling-superdark
-        color: $color-white
-        border: 1px solid $color-winterling-superdark
-    &:disabled
-      opacity: .5
-      transition: opacity .3s ease-in-out
-      cursor: not-allowed
+    // background-color: $color-winterling-superdark
+    // outline: none
+    // border: 1px solid $color-winterling-superdark
+    // font-size: 16px
+    // &:hover
+    //   border: 1px solid $color-winterling-superdark
+    //   background-color: $color-white
+    //   color: $color-winterling-superdark
+    //   &:disabled
+    //     background-color: $color-winterling-superdark
+    //     color: $color-white
+    //     border: 1px solid $color-winterling-superdark
+    // &:disabled
+    //   opacity: .5
+    //   transition: opacity .3s ease-in-out
+    //   cursor: not-allowed
 
 fieldset
   border: 0
@@ -61,27 +49,22 @@ fieldset
   gap: 20px
   > div
     width: 100%
-label
-  display: block
-  font-weight: 500
 textarea
   line-height: 1.5rem
 input, textarea
   outline: none
   width: 100%
-  border: 1px solid $color-background
-  border-radius: 2px
+  // border: 1px solid $color-background
   padding: 8px
-  &:hover
-    border-color: $color-winterling-light
-  &:active, &:focus
-    border-color: $color-winterling-dark
-  &::placeholder
-    color: $placeholder-color
-    font-family: inherit
-    letter-spacing: inherit
+  // &:hover
+  //   border-color: $color-winterling-light
+  // &:active, &:focus
+  //   border-color: $color-winterling-dark
+  // &::placeholder
+  //   color: $placeholder-color
+  //   font-family: inherit
+  //   letter-spacing: inherit
 
 @media (min-width: 600px)
   form
     width: 600px
-    padding: 30px 50px

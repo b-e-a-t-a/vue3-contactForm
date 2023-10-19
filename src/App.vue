@@ -3,21 +3,21 @@ import HomeView from "./views/HomeView.vue"
 </script>
 
 <template>
-  <div class="container">
-    <HomeView />
-  </div>
+  <v-app ref="app">
+    <v-main
+      class="d-flex align-center justify-center flex-wrap bg-teal-lighten-4"
+      style="min-height: 100vh;"
+    >
+      <!-- <div class="container"> -->
+      <HomeView />
+      <!-- </div> -->
+    </v-main>
+  </v-app>
 </template>
 
 <style lang="sass">
-@import './assets/main.sass'
 
 .container
   min-height: 100vh
   margin: 0 auto
-  display: flex
-  align-items: center
-  justify-content: center
-  flex-wrap: wrap
-  background-color: $color-winterling
-
 </style>

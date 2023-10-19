@@ -3,8 +3,6 @@
 </template>
 
 <style lang="sass" scoped>
-@import "../assets/main.sass"
-
 .loader
   border: 4px solid darken($color-winterling-superdark, 80%)
   border-radius: 50%

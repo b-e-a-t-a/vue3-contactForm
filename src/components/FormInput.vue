@@ -1,7 +1,7 @@
 <template>
   <div>
-    <label :for="name">{{ label }}</label>
-    <input
+    <label :for="name" class="font-weight-medium">{{ label }}</label>
+    <v-text-field
       :value="modelValue"
       :name="name"
       :id="name"
@@ -9,7 +9,7 @@
       :class="{'error': error}"
       v-bind="$attrs"
       @input="$emit('update:modelValue', $event.target.value)"
-    >
+    />
     <div v-if="error" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>
