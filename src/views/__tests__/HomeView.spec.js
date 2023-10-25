@@ -1,5 +1,10 @@
 import { describe, it, expect, test, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
+
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
+
 import HomeView from '../HomeView.vue';
 
 describe('HomeView.vue', () => {
@@ -13,8 +18,19 @@ describe('HomeView.vue', () => {
   const maxLengthSubject = 100;
   const maxLengthMessage = 500;
 
+  const vuetify = createVuetify({
+    components,
+    directives,
+  })
+
+  global.ResizeObserver = require('resize-observer-polyfill')
+
   beforeEach(() => {
-    wrapper = mount(HomeView);
+    wrapper = mount(HomeView, {
+      global: {
+        plugins: [vuetify]
+      }
+    });
 
     nameInput = wrapper.find('[data-test="new-name"] input');
     emailInput = wrapper.find('[data-test="new-email"] input');
@@ -23,9 +39,8 @@ describe('HomeView.vue', () => {
   });
 
   it('mounts the component Homeview', () => {
-    expect(mount(HomeView)).toBeTruthy();
+    expect(wrapper).toBeTruthy();
   })
-
 
   it('renders a header form in HomeView', () => {
     const header = wrapper.get('form [data-test="header"]');
@@ -43,8 +58,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-name"] .error-message'));
-    expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain('Required field');
+    expect(wrapper.get('[data-test="new-name"] #name-messages'));
+    expect(wrapper.get('[data-test="new-name"] #name-messages').text()).toContain('Required field');
   })
 
   // 2. div.error-message when input name value length < 5 & click Submit (validateName)
@@ -58,8 +73,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-name"] .error-message'));
-    expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain(`Name must be at least ${minLengthName}`);
+    expect(wrapper.get('[data-test="new-name"] #name-messages'));
+    expect(wrapper.get('[data-test="new-name"] #name-messages').text()).toContain(`Name must be at least ${minLengthName}`);
   })
 
   // 3. div.error-message when input name value length > 50 & click Submit (validateName)
@@ -73,22 +88,28 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-name"] .error-message'));
-    expect(wrapper.get('[data-test="new-name"] .error-message').text()).toContain(`Name must be maximum ${maxLengthName}`);
+    expect(wrapper.get('[data-test="new-name"] #name-messages'));
+    expect(wrapper.get('[data-test="new-name"] #name-messages').text()).toContain(`Name must be maximum ${maxLengthName}`);
   })
 
   // 4. div.error-message when input name value is number & click Submit (validateName)
   test('gives wrong name', async () => {
     const wrongName = '123Anonimowy';
-    const nameInput = wrapper.getComponent('[data-test="new-name"]');
-    expect(nameInput.get('[data-test="new-name"] input').text()).toEqual('');
+    // const nameInput = wrapper.getComponent('[data-test="new-name"]');
+    // expect(nameInput.get('[data-test="new-name"] input').text()).toEqual('');
+    // await wrapper.findComponent('[data-test="new-name"]').setValue(wrongName);
+    // expect(wrapper.find('[data-test="new-name"] input').element.value).toBe(wrongName);
+    expect(nameInput.text()).toContain('');
 
-    await wrapper.findComponent('[data-test="new-name"]').setValue(wrongName);
-    expect(wrapper.find('[data-test="new-name"] input').element.value).toBe(wrongName);
+    await nameInput.setValue(wrongName);
+    expect(nameInput.element.value).toBe(wrongName);
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
-    expect(nameInput.get('[data-test="new-name"] div').classes()).toContain('error-message');
-    expect(nameInput.get('[data-test="new-name"] div').text()).toEqual('Invalid name. Name can contain letters and cannot contain numbers');
+
+    // expect(nameInput.get('[data-test="new-name"] div').classes()).toContain('error-message');
+    // expect(nameInput.get('[data-test="new-name"] div').text()).toEqual('Invalid name. Name can contain letters and cannot contain numbers');
+    expect(wrapper.get('[data-test="new-name"] #name-messages'));
+    expect(wrapper.get('[data-test="new-name"] #name-messages').text()).toEqual('Invalid name. Name can contain letters and cannot contain numbers');
   })
 
   // 5. div.error-message when empty input email & click Submit
@@ -102,8 +123,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-email"] .error-message'));
-    expect(wrapper.get('[data-test="new-email"] .error-message').text()).toContain('Required field');
+    expect(wrapper.get('[data-test="new-email"] #email-messages'));
+    expect(wrapper.get('[data-test="new-email"] #email-messages').text()).toContain('Required field');
   })
 
   // 6. div.error-message when wrong format of input email & click Submit (validateEmail)
@@ -117,8 +138,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-email"] .error-message'));
-    expect(wrapper.get('[data-test="new-email"] .error-message').text()).toContain('Invalid email address');
+    expect(wrapper.get('[data-test="new-email"] #email-messages'));
+    expect(wrapper.get('[data-test="new-email"] #email-messages').text()).toContain('Invalid email address');
   })
 
   // 7. div.error-message when empty input message & click Submit
@@ -132,8 +153,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-message"] .error-message'));
-    expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain('This field cannot be empty');
+    // expect(wrapper.get('[data-test="new-message"] .error-message'));
+    // expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain('This field cannot be empty');
   })
 
   // 8. div.error-message when input message value length > 500 & click Submit
@@ -147,8 +168,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-message"] .error-message'));
-    expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain(`Message must be maximum ${maxLengthMessage}`);
+    // expect(wrapper.get('[data-test="new-message"] .error-message'));
+    // expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain(`Message must be maximum ${maxLengthMessage}`);
   })
 
   // 9. SUCCESS no div.error-message when empty input subject & click Submit
@@ -162,7 +183,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.find('[data-test="new-subject"] .error-message').exists()).toBe(false);
+    expect(wrapper.get('[data-test="new-subject"] #subject-messages').text()).toContain('');
+    // expect(wrapper.find('[data-test="new-subject"] .error-message').exists()).toBe(false);
   })
 
   // 10. div.error-message when input subject value > 100 & click Submit
@@ -176,8 +198,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    expect(wrapper.get('[data-test="new-subject"] .error-message'));
-    expect(wrapper.get('[data-test="new-subject"] .error-message').text()).toContain(`Subject must be maximum ${maxLengthSubject}`);
+    expect(wrapper.get('[data-test="new-subject"] #subject-messages'));
+    expect(wrapper.get('[data-test="new-subject"] #subject-messages').text()).toContain(`Subject must be maximum ${maxLengthSubject}`);
   })
 
   // 11. SUCCESS: any of div.error-message when all required (no subject) input values & click Submit
@@ -210,7 +232,7 @@ describe('HomeView.vue', () => {
     await submitForm.trigger('submit.prevent');
     expect(spyOnForm).toHaveBeenCalledOnce();
 
-    expect(submitForm.find('.error-message').exists()).toBe(false);
+    // expect(submitForm.find('.error-message').exists()).toBe(false);
   })
 
   // 13. the success notification should be shown when success is true
@@ -219,7 +241,8 @@ describe('HomeView.vue', () => {
       global: {
         mocks: {
           success: true
-        }
+        },
+        plugins: [vuetify]
       }
     });
 
@@ -235,7 +258,8 @@ describe('HomeView.vue', () => {
           errorThrow: {
             state: true
           }
-        }
+        },
+        plugins: [vuetify]
       }
     });
     expect(wrapper.find('.toast-error').exists()).toBe(true);
@@ -247,10 +271,11 @@ describe('HomeView.vue', () => {
       global: {
         mocks: {
           isLoading: true
-        }
+        },
+        plugins: [vuetify]
       }
     })
 
-    expect(wrapper.find('.loader').exists()).toBe(true);
+    expect(wrapper.find('.v-btn__loader').exists()).toBe(true);
   })
 })

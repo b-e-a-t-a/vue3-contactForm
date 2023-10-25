@@ -5,6 +5,7 @@
         <transition name="form">
           <v-form data-test="form"
             class="bg-white rounded pa-3 px-md-8 py-md-13"
+            validate-on="input"
             @submit.prevent="send"
           >
             <h1
@@ -25,8 +26,6 @@
                 pattern="^[a-zA-Z]+[a-zA-Z\s]*?[^0-9]"
                 autocomplete="off"
                 :rules="nameRules"
-                :error="invalidName"
-                @blur="nameBlured = true"
               />
               <FormInput
                 data-test="new-email"
@@ -37,8 +36,6 @@
                 type="email"
                 autocomplete="off"
                 :rules="emailRules"
-                :error="invalidEmail"
-                @blur="emailBlured = true"
               />
               <FormInput
                 data-test="new-subject"
@@ -49,8 +46,6 @@
                 autocomplete="off"
                 :maxlength="maxLengthSubject"
                 :rules="subjectRules"
-                :errorMessage="data.subject && data.subject.length > maxLengthSubject && `Subject must be maximum ${maxLengthSubject} characters`"
-                :error="invalidSubject"
               />
               <FormTextarea
                 data-test="new-message"
@@ -135,29 +130,11 @@ let errorThrow = reactive({
 const success = ref(false);
 const isLoading = ref(false);
 
-const nameBlured = ref(false);
-const emailBlured = ref(false);
 const messageBlured = ref(false);
-
-const invalidName = computed(() => {
-  return Boolean(!data.value.name && nameBlured.value)  //no value but touched
-    || Boolean(nameBlured.value && !validateName(data.value.name))  //value in incorrect format
-    || Boolean(nameBlured.value && data.value.name && data.value.name.length < minLengthName)
-    || Boolean(nameBlured.value && data.value.name && data.value.name.length > maxLengthName)
-});
-
-const invalidEmail = computed(() => {
-  return Boolean(!data.value.email && emailBlured.value)
-    || Boolean(emailBlured.value && !validateEmail(data.value.email))
-});
 
 const invalidMessage = computed(() => {
   return Boolean(!data.value.message && messageBlured.value)
   || Boolean(messageBlured.value && data.value.message && data.value.message.length > maxLengthMessage)
-});
-
-const invalidSubject = computed(() => {
-  return Boolean(data.value.subject && data.value.subject.length > maxLengthSubject)
 });
 
 const nameRules = reactive([
@@ -177,9 +154,8 @@ const messageRules = reactive([
   v => (v.length <= maxLengthMessage) || `Message must be maximum ${maxLengthMessage} characters`
 ]); // textarea to check rules
 
-const subjectRules = reactive([ // to do
-  // v => !v,
-  v => (v && v.length <= maxLengthSubject) || `Subject must be maximum ${maxLengthSubject} characters`
+const subjectRules = reactive([
+  v => !v || (v && v.length <= maxLengthSubject) || `Subject must be maximum ${maxLengthSubject} characters`
 ]);
 
 
@@ -187,16 +163,11 @@ const isFormValid = computed(() => {
   const valid = data.value.name &&
     data.value.email &&
     data.value.message &&
-    !invalidSubject.value &&
-    !invalidEmail.value &&
-    !invalidName.value &&
     !invalidMessage.value
   return valid;
 });
 
 const setBlurValues = (val) => {
-  nameBlured.value = val;
-  emailBlured.value = val;
   messageBlured.value = val;
 };
 
