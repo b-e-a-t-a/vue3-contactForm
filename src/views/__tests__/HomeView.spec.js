@@ -153,8 +153,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    // expect(wrapper.get('[data-test="new-message"] .error-message'));
-    // expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain('This field cannot be empty');
+    expect(wrapper.get('[data-test="new-message"] #message-messages'));
+    expect(wrapper.get('[data-test="new-message"] #message-messages').text()).toContain('This field cannot be empty');
   })
 
   // 8. div.error-message when input message value length > 500 & click Submit
@@ -168,8 +168,8 @@ describe('HomeView.vue', () => {
 
     await wrapper.get('[data-test="form"]').trigger('submit.prevent');
 
-    // expect(wrapper.get('[data-test="new-message"] .error-message'));
-    // expect(wrapper.get('[data-test="new-message"] .error-message').text()).toContain(`Message must be maximum ${maxLengthMessage}`);
+    expect(wrapper.get('[data-test="new-message"] #message-messages'));
+    expect(wrapper.get('[data-test="new-message"] #message-messages').text()).toContain(`Message must be maximum ${maxLengthMessage}`);
   })
 
   // 9. SUCCESS no div.error-message when empty input subject & click Submit
@@ -232,7 +232,7 @@ describe('HomeView.vue', () => {
     await submitForm.trigger('submit.prevent');
     expect(spyOnForm).toHaveBeenCalledOnce();
 
-    // expect(submitForm.find('.error-message').exists()).toBe(false);
+    expect(submitForm.find('v-from[valid]').exists()).toBe(false);
   })
 
   // 13. the success notification should be shown when success is true

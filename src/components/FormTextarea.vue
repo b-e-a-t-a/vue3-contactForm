@@ -1,16 +1,17 @@
 <template>
   <div>
-    <label :for="name">{{ label }}</label>
-    <textarea
+    <label :for="name" class="font-weight-medium">{{ label }}</label>
+    <v-textarea
+      :clearable="clearable"
+      clear-icon="mdi-close-circle"
+      counter
       :value="modelValue"
       :name="name"
       :id="name"
       class="input"
-      :class="{'error': error}"
       v-bind="$attrs"
       @input="$emit('update:modelValue', $event.target.value)"
     />
-    <div v-if="error" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>
 
@@ -28,16 +29,9 @@ defineProps({
     type: String,
     default: ""
   },
-  errorMessage: {
-    type: String,
-    default: ""
-  },
-  error: {
+  clearable: {
     type: Boolean,
     default: false
   }
 })
 </script>
-
-<style lang="sass" scoped>
-</style>

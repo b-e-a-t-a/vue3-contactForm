@@ -3,7 +3,9 @@
     <v-container>
       <v-sheet :elevation="24" rounded>
         <transition name="form">
-          <v-form data-test="form"
+          <v-form
+            data-test="form"
+            ref="form"
             class="bg-white rounded pa-3 px-md-8 py-md-13"
             validate-on="input"
             @submit.prevent="send"
@@ -58,9 +60,6 @@
                 autocomplete="off"
                 rows="5"
                 :rules="messageRules"
-                :errorMessage="(data.message && data.message.length > maxLengthMessage) ? `Message must be maximum ${maxLengthMessage} characters` : 'This field cannot be empty'"
-                :error="invalidMessage"
-                @blur="messageBlured = true"
               />
             </fieldset>
 
@@ -130,13 +129,6 @@ let errorThrow = reactive({
 const success = ref(false);
 const isLoading = ref(false);
 
-const messageBlured = ref(false);
-
-const invalidMessage = computed(() => {
-  return Boolean(!data.value.message && messageBlured.value)
-  || Boolean(messageBlured.value && data.value.message && data.value.message.length > maxLengthMessage)
-});
-
 const nameRules = reactive([
   v => !!v || `Required field. Name must be at least ${minLengthName} characters`,
   v => (v.length >= minLengthName) || `Invalid name. Name must be at least ${minLengthName} characters`,
@@ -152,28 +144,18 @@ const emailRules = reactive([
 const messageRules = reactive([
   v => !!v || 'This field cannot be empty',
   v => (v.length <= maxLengthMessage) || `Message must be maximum ${maxLengthMessage} characters`
-]); // textarea to check rules
+]);
 
 const subjectRules = reactive([
   v => !v || (v && v.length <= maxLengthSubject) || `Subject must be maximum ${maxLengthSubject} characters`
 ]);
 
 
-const isFormValid = computed(() => {
-  const valid = data.value.name &&
-    data.value.email &&
-    data.value.message &&
-    !invalidMessage.value
-  return valid;
-});
+const form = ref(null);
 
-const setBlurValues = (val) => {
-  messageBlured.value = val;
-};
-
-const send = () => {
-  setBlurValues(true);
-  if (isFormValid.value) {
+const send = async () => {
+  const { valid } = await form.value.validate()
+  if (valid) {
     isLoading.value = true;
 
     fetch(`https://5d9f7fe94d823c0014dd323d.mockapi.io/api/message`, {
@@ -189,9 +171,8 @@ const send = () => {
       if (response.ok) {
         response = await response.json()
         isLoading.value = false;
-        data.value = {};
-        setBlurValues(false);
         success.value = true;
+        form.value.reset();
       } else {
         isLoading.value = false;
         errorThrow.state = true;
@@ -207,11 +188,6 @@ const send = () => {
 </script>
 
 <style lang="sass">
-//.error
-//  border: 1px solid $error-color
-//.error-message
-//  color: $error-color
-//  font-size: 12px
 .loader
   display: flex
   justify-content: center

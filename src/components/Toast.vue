@@ -48,7 +48,7 @@ function handleToastClosed() {
   bottom: 0
   left: 0
   right: 0
-  //background: $success-color
+  background: $success-color
   padding: 2.5rem 0
   transition: all .3s
   z-index: 10
@@ -72,16 +72,16 @@ function handleToastClosed() {
     &:active, &:hover
       border: none
       span
-        color: $success-color
+        color: grey
 
   &-error
     background-color: $warning-color
     color: black
     span
-      color: grey
+      color: black
       font-size: 1.5rem
     button
       &:active, &:hover
         span
-          color: $warning-color
+          color: grey
 </style>
